@@ -2,7 +2,7 @@
 '''
 A simple script for passing commands to various media players.
 
-This script needs ``dbus-python`` for spotify communcation.
+This script needs ``dbus-python`` for spotify communication.
 
 To run simply::
 
