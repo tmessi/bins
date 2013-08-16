@@ -1,0 +1,11 @@
+#!/bin/bash
+
+## A simple script to manage a rotating background image.
+## Create ~/.wallpaper and place the desired backgrounds into the directory.
+## Or symlink ~/.wallpaper to a directory with backgrounds.
+## Change the sleep time to adjust the duration of the wallpaper.
+while true; do
+    feh --bg-fill "$(find ~/.wallpaper/ -name *.jpg | shuf -n 1)"
+    sleep 15m
+done &
+
