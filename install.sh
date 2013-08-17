@@ -43,11 +43,11 @@ else
 fi
 
 for bin in $(ls); do
-    if [ ! $bin == "README.rst" -a ! $bin == "install.sh" ]; then
-        target="$HOME/bin/$dot"
+    if [ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE" ]; then
+        target="$HOME/bin/$bin"
 
         if [[ $pretend -eq 1 ]]; then
-            echo "Would set $dot"
+            echo "Would set $bin"
         else
             # Make a .bak of a file or dir
             if [ ! -h $target ]; then
@@ -56,8 +56,8 @@ for bin in $(ls); do
                 fi
             fi
 
-            echo "Setting $dot"
-            ln -sf "$PWD/$dot" "$target"
+            echo "Setting $bin"
+            ln -sf "$PWD/$bin" "$target"
         fi
     fi
 done
