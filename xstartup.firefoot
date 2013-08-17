@@ -1,3 +1,4 @@
 #!/bin/bash
 
 pidof synergys || synergys
+wallpaper --duration 1d --mode fill
