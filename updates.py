@@ -64,7 +64,7 @@ def main():
     for atom in get_world_entries():
         if get_best_version(atom) not in get_installed_versions(atom):
             updatable.add(atom)
-    print 'Total: {0}'.format(len(updatable))
+    print '{0}'.format(len(updatable))
 
 
 if __name__ == "__main__":
