@@ -48,5 +48,5 @@ while true; do
 done
 
 for ((i=1;i<=screens;i++)); do
-    conky 2>/dev/null | dzen2 -ta r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn '-*-terminus-*-*-*-*-12-*-*-*-*-*-iso8859' -e '' -xs $i &
+    conky 2>/dev/null | dzen2 -ta r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn '-*-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859' -e '' -xs $i &
 done
