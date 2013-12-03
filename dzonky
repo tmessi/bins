@@ -3,8 +3,7 @@
 ## A simple script to start a dzen bar to display conky
 
 name=${0##*/}
-xpos=500
-width=860
+width=800
 screens=1
 
 function print_help() {
@@ -12,14 +11,12 @@ function print_help() {
 
 optional args:
 
-    -x|--xpos     the starting x position of the bar. Default is 500.
     -w|--width    the width of the bar. Default is 860.
-    -s|--screens  the number of screens. Will spawn a dzen for each screen.
     -h|--help     print this help."
 }
 
 pretend=0
-OPTS=$(getopt -o x:w:s:h --long xpos:,width:,screens:,help -n "$name" -- "$@")
+OPTS=$(getopt -o w:h --long width:,help -n "$name" -- "$@")
 
 if [ $? != 0 ]; then echo "option error" >&2; exit 1; fi
 
@@ -27,14 +24,8 @@ eval set -- "$OPTS"
 
 while true; do
     case "$1" in
-        -x|--xpos)
-            xpos="$2"
-            shift 2;;
         -w|--width)
             width="$2"
-            shift 2;;
-        -s|--screens)
-            screens="$2"
             shift 2;;
         -h|--help)
             print_help
@@ -47,6 +38,13 @@ while true; do
     esac
 done
 
-for ((i=1;i<=screens;i++)); do
-    conky 2>/dev/null | dzen2 -ta r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn 'Terminus:style=Regular:pixelsize=10:antialias=true' -e '' -xs $i &
+screens=$(xrandr | grep '*' | cut -f 4 -d ' ' | sort -r)
+
+sn=1
+for screen in $screens; do
+    xres=${screen%x*}
+    xpos=$(echo "$xres-$width" | bc -l)
+    echo $xpos $width
+    conky 2>/dev/null | dzen2 -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn 'Terminus:style=Regular:pixelsize=10:antialias=true' -e '' -xs $sn &
+    let sn+=1
 done
