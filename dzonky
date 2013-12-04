@@ -11,7 +11,7 @@ function print_help() {
 
 optional args:
 
-    -w|--width    the width of the bar. Default is 860.
+    -w|--width    the width of the bar. Default is $width
     -h|--help     print this help."
 }
 
