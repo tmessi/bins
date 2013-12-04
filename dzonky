@@ -44,7 +44,6 @@ sn=1
 for screen in $screens; do
     xres=${screen%x*}
     xpos=$(echo "$xres-$width" | bc -l)
-    echo $xpos $width
     conky 2>/dev/null | dzen2 -ta r -sa r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn 'Terminus:style=Regular:pixelsize=10:antialias=true' -e '' -xs $sn &
     let sn+=1
 done
