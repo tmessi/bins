@@ -43,3 +43,10 @@ Filter options follow `-vf`.
 `crop=`: Remove black bars, determine with `cropdetect` (see above).
 
 `hqdn3d=2:1:2`: More quaility.
+
+Links
+-----
+
+http://www.mplayerhq.hu/DOCS/HTML/en/encoding-guide.html
+http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-telecine.html
+http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-enc-libavcodec.html
