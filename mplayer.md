@@ -12,27 +12,20 @@ mencode dvd://1 -ofps 24000/1001 -oac copy -ovc lavc -lavcopts vcodec=mpeg4:vbit
 Options details
 ---------------
 
-`-ofps`: FPS of output, `24000/1001` is most North American DVDs.
-
-`-oac copy`: Copy audio from DVD, keeps best audio quality.
-
-`-ovc lavc`: Use lavc for video encoding, default mplayer decoder.
++ `-ofps`: FPS of output, `24000/1001` is most North American DVDs.
++ `-oac copy`: Copy audio from DVD, keeps best audio quality.
++ `-ovc lavc`: Use lavc for video encoding, default mplayer decoder.
 
 
 Options for video encoding follow `-lavopts`.
 
 
-`vcodec=mpeg4`: Codec to use.
-
-`vbitrate=2400`: Variable bit rate. `2400` is a good default value for high quality.
-
-`v4mv:mbd=2:trell`: Increase quality at expense of encoding time.
-
-`cmp=3:subcmp=3`: Comparison function that yields higher quality than defatuls. Can experiment (see man page for possible values).
-
-`autoaspect`: Automatically adjust aspect
-
-`vpass`: The pass on the video. Run the same command with `vpass=2` after first pass. A third pass may increase quality again, but minimally. Never need more than four passes. (Dimishing returns).
++ `vcodec=mpeg4`: Codec to use.
++ `vbitrate=2400`: Variable bit rate. `2400` is a good default value for high quality.
++ `v4mv:mbd=2:trell`: Increase quality at expense of encoding time.
++ `cmp=3:subcmp=3`: Comparison function that yields higher quality than defatuls. Can experiment (see man page for possible values).
++ `autoaspect`: Automatically adjust aspect
++ `vpass`: The pass on the video. Run the same command with `vpass=2` after first pass. A third pass may increase quality again, but minimally. Never need more than four passes. (Dimishing returns).
 
 
 Filter options follow `-vf`.
@@ -47,6 +40,6 @@ Filter options follow `-vf`.
 Links
 -----
 
-http://www.mplayerhq.hu/DOCS/HTML/en/encoding-guide.html
-http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-telecine.html
-http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-enc-libavcodec.html
++ http://www.mplayerhq.hu/DOCS/HTML/en/encoding-guide.html
++ http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-telecine.html
++ http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-enc-libavcodec.html
