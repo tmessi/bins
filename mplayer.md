@@ -6,7 +6,7 @@ mplayer dvd://1 -chapter 2 -vf cropdetect # display values for crop of black bar
 ```
 
 ```bash
-mencode dvd://1 -ofps 24000/1001 -oac copy -ovc lavc -lavcopts vcodec=mpeg4:vbitrate=2400:v4mv:mbd=2:trell:cmp=3:subcmp=3:autoaspect:vpass=1 -vf pullup,softskip,crop=720:352:0:62,hqdn3d=2:1:2 -o movie.avi
+mencode dvd://1 -ofps 24000/1001 -oac copy -ovc lavc -lavcopts vcodec=mpeg4:vbitrate=2400:v4mv:mbd=2:trell:cmp=3:subcmp=3:autoaspect:vpass=1 -vf pullup,softskip,crop=720:352:0:62,hqdn3d=2:1:2 -mc 0 -noskip -ni -o movie.avi
 ```
 
 Options details
@@ -15,6 +15,8 @@ Options details
 + `-ofps`: FPS of output, `24000/1001` is most North American DVDs.
 + `-oac copy`: Copy audio from DVD, keeps best audio quality.
 + `-ovc lavc`: Use lavc for video encoding, default mplayer decoder.
++ `-mc 0 -noskip`: Guard against skips and keeps audio in sync.
++ `-ni`: Force non-interlace
 
 
 Options for video encoding follow `-lavopts`.
