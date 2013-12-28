@@ -30,12 +30,10 @@ Options for video encoding follow `-lavopts`.
 
 Filter options follow `-vf`.
 
++ `pullup,softskip`: Used due to North American Region DVD, may need to use other filter options for TV.
++ `crop=`: Remove black bars, determine with `cropdetect` (see above).
++ `hqdn3d=2:1:2`: More quaility.
 
-`pullup,softskip`: Used due to North American Region DVD, may need to use other filter options for TV.
-
-`crop=`: Remove black bars, determine with `cropdetect` (see above).
-
-`hqdn3d=2:1:2`: More quaility.
 
 Links
 -----
