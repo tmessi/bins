@@ -32,9 +32,11 @@ Options for video encoding follow `-lavopts`.
 
 Filter options follow `-vf`.
 
-+ `pullup,softskip`: Used due to North American Region DVD, may need to use other filter options for TV.
++ `pullup,softskip`: Used to inverse-telecine (safe with progressive as well)
 + `crop=`: Remove black bars, determine with `cropdetect` (see above).
 + `hqdn3d=2:1:2`: More quaility.
++ `filmdint`: Used with mixed progressive and telecine
++ `harddup`: improves A/V sync reliabiltiy
 
 
 Links
