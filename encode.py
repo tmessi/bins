@@ -10,11 +10,10 @@ def _parseargs():
                         metavar='N',
                         type=str,
                         help='output name')
-    parser.add_argument('--chapters',
+    parser.add_argument('--titles',
                         default=None,
-                        help='chapters to encode')
+                        help='titles to encode')
     parser.add_argument('--crop',
-                        nargs=1,
                         default=None,
                         help='crop setting')
     parser.add_argument('--opfs',
@@ -25,32 +24,50 @@ def _parseargs():
                         type=int,
                         default='2400',
                         help='vbitrate setting')
+    parser.add_argument('--passes',
+                        type=int,
+                        default='2',
+                        help='number of passes to run')
+    parser.add_argument('--filters',
+                        type=str,
+                        default='pullup,softskip,',
+                        help='Filters, try `filmdint` for mixed progressing and telecine')
+    parser.add_argument('--dvd-device',
+                        type=str,
+                        default=None,
+                        help='dvd device path')
     args =  parser.parse_args()
-    if not args.chapters:
-        args.chapters = [1]
+    if not args.titles:
+        args.titles = [1]
+    else:
+        args.titles = [title for title in args.titles.split(',')]
+
     if args.crop:
-        args.crop = ',crop={0}'.format(args.crop)
+        args.crop = 'crop={0},'.format(args.crop)
     return args
 
 
 def main():
     args = _parseargs()
-    passes = [1, 2]
-    for chapter in args.chapters:
-        for pass_ in passes:
-            cmd = ['mencode',
-                   'dvd://{0}'.format(chapter),
+    for title in args.titles:
+        for pass_ in range(1, args.passes + 1):
+            cmd = ['mencoder',
+                   'dvd://{0}'.format(title),
                    '-ofps', '{0}'.format(args.opfs),
                    '-oac', 'copy',
                    '-ovc', 'lavc',
                    '-lavcopts', 'vcodec=mpeg4:vbitrate={0}:v4mv:mbd=2:trell:cmp=3:subcmp=3:autoaspect:vpass={1}'.format(args.vbitrate, pass_),
-                   '-vf', 'pullup,softskip{0},hqdn3d=2:1:2'.format(args.crop or ''),
+                   '-vf', '{0}{1}hqdn3d=2:1:2,harddup'.format(args.filters,
+                                                              args.crop or ''),
+                   '-ni',
                    '-mc', '0',
                    '-noskip',
-                   '-ni',
-                   '-o', '0}.avi'.format(args.name)]
-            p = subprocess.Popen(cmd,
-                                 stdout=subprocess.STDOUT)
+                   '-nosub',
+                   '-o', '{0}-{1}.avi'.format(args.name, title)]
+            if args.dvd_device:
+                cmd.extend(['-dvd-device', args.dvd_device])
+            print 'Starting pass {0}: {1}'.format(pass_, cmd)
+            p = subprocess.Popen(cmd)
             p.wait()
 
 
