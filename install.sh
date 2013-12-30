@@ -43,7 +43,7 @@ else
 fi
 
 for bin in $(ls); do
-    if [ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE" ]; then
+    if [ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE"  -a ! $bin == "mplayer.md" ]; then
         target="$HOME/bin/$bin"
 
         if [[ $pretend -eq 1 ]]; then
