@@ -36,6 +36,9 @@ def _parseargs():
                         type=str,
                         default=None,
                         help='dvd device path')
+    parser.add_argument('--cropdetect',
+                        action='store_true',
+                        help='preform a crop detect')
     args =  parser.parse_args()
     if not args.titles:
         args.titles = [1]
@@ -49,6 +52,17 @@ def _parseargs():
 
 def main():
     args = _parseargs()
+    if args.cropdetect:
+        for title in args.titles:
+            cmd = ['mplayer',
+                   'dvd://{0}'.format(title),
+                   '-vf', 'cropdetect']
+            if args.dvd_device:
+                cmd.extend(['-dvd-device', args.dvd_device])
+            p = subprocess.Popen(cmd)
+            p.wait()
+        return
+
     for title in args.titles:
         for pass_ in range(1, args.passes + 1):
             cmd = ['mencoder',
