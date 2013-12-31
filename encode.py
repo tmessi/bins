@@ -39,6 +39,9 @@ def _parseargs():
     parser.add_argument('--cropdetect',
                         action='store_true',
                         help='preform a crop detect')
+    parser.add_argument('--noskip',
+                        action='store_true',
+                        help='no skips')
     args =  parser.parse_args()
     if not args.titles:
         args.titles = [1]
@@ -75,11 +78,12 @@ def main():
                                                               args.crop or ''),
                    '-ni',
                    '-mc', '0',
-                   '-noskip',
                    '-nosub',
                    '-o', '{0}-{1}.avi'.format(args.name, title)]
             if args.dvd_device:
                 cmd.extend(['-dvd-device', args.dvd_device])
+            if args.noskip:
+                cmd.extend(['-noskip'])
             print 'Starting pass {0}: {1}'.format(pass_, cmd)
             p = subprocess.Popen(cmd)
             p.wait()
