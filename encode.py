@@ -46,6 +46,9 @@ def _parseargs():
     parser.add_argument('--sb',
                         default=None,
                         help='seek byte. used for dvds with junk in the begining. Try `2500000`.')
+    parser.add_argument('--audio-delay',
+                        default=None,
+                        help='delay audio')
     parser.add_argument('--noskip',
                         action='store_true',
                         help='no skips')
@@ -98,6 +101,8 @@ def main():
                 cmd.extend(['-noskip'])
             if args.sb:
                 cmd.extend(['-sb', '{0}'.format(args.sb)])
+            if args.audio_delay:
+                cmd.extend(['-audio-delay', '{0}'.format(args.audio_delay)])
             print 'Starting pass {0}: {1}'.format(pass_, cmd)
             p = subprocess.Popen(cmd)
             p.wait()
