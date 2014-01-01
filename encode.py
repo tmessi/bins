@@ -28,6 +28,10 @@ def _parseargs():
                         type=int,
                         default='2',
                         help='number of passes to run')
+    parser.add_argument('--aid',
+                        type=int,
+                        default='128',
+                        help='audio track to record')
     parser.add_argument('--filters',
                         type=str,
                         default='pullup,softskip,',
@@ -62,6 +66,7 @@ def main():
                    '-vf', 'cropdetect']
             if args.dvd_device:
                 cmd.extend(['-dvd-device', args.dvd_device])
+            print 'Cropdetect: {0}'.format(cmd)
             p = subprocess.Popen(cmd)
             p.wait()
         return
@@ -72,6 +77,7 @@ def main():
                    'dvd://{0}'.format(title),
                    '-ofps', '{0}'.format(args.opfs),
                    '-oac', 'copy',
+                   '-aid', '{0}'.format(args.aid),
                    '-ovc', 'lavc',
                    '-lavcopts', 'vcodec=mpeg4:vbitrate={0}:v4mv:mbd=2:trell:cmp=3:subcmp=3:autoaspect:vpass={1}'.format(args.vbitrate, pass_),
                    '-vf', '{0}{1}hqdn3d=2:1:2,harddup'.format(args.filters,
