@@ -12,30 +12,30 @@ def _parseargs():
                         help='output name')
     parser.add_argument('--titles',
                         default=None,
-                        help='titles to encode')
+                        help='titles to encode. Default is `1`.')
     parser.add_argument('--crop',
                         default=None,
                         help='crop setting')
     parser.add_argument('--opfs',
                         type=str,
                         default='24000/1001',
-                        help='opfs setting')
+                        help='opfs setting. Default is `24000/1001`.')
     parser.add_argument('--vbitrate',
                         type=int,
                         default='2400',
-                        help='vbitrate setting')
+                        help='vbitrate setting. Default is `2400`.')
     parser.add_argument('--passes',
                         type=int,
                         default='2',
-                        help='number of passes to run')
+                        help='number of passes to run. Default is `2`')
     parser.add_argument('--aid',
                         type=int,
                         default='128',
-                        help='audio track to record')
+                        help='audio track to record. Default is `128`.')
     parser.add_argument('--filters',
                         type=str,
                         default='filmdint,',
-                        help='Filters, try `pullup,softskip,` for mixed progressing and telecine')
+                        help='Filters, try `pullup,softskip,` for mixed progressing and telecine. Default is `filmdint,`.')
     parser.add_argument('--dvd-device',
                         type=str,
                         default=None,
