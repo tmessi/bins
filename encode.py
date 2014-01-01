@@ -69,6 +69,8 @@ def main():
                    '-vf', 'cropdetect']
             if args.dvd_device:
                 cmd.extend(['-dvd-device', args.dvd_device])
+            if args.sb:
+                cmd.extend(['-sb', '{0}'.format(args.sb)])
             print 'Cropdetect: {0}'.format(cmd)
             p = subprocess.Popen(cmd)
             p.wait()
