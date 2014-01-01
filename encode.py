@@ -34,8 +34,8 @@ def _parseargs():
                         help='audio track to record')
     parser.add_argument('--filters',
                         type=str,
-                        default='pullup,softskip,',
-                        help='Filters, try `filmdint` for mixed progressing and telecine')
+                        default='filmdint,',
+                        help='Filters, try `pullup,softskip,` for mixed progressing and telecine')
     parser.add_argument('--dvd-device',
                         type=str,
                         default=None,
@@ -49,9 +49,9 @@ def _parseargs():
     parser.add_argument('--audio-delay',
                         default=None,
                         help='delay audio')
-    parser.add_argument('--noskip',
+    parser.add_argument('--allowskips',
                         action='store_true',
-                        help='no skips')
+                        help='disable noskip')
     args =  parser.parse_args()
     if not args.titles:
         args.titles = [1]
@@ -97,7 +97,7 @@ def main():
                    '-o', '{0}-{1}.avi'.format(args.name, title)]
             if args.dvd_device:
                 cmd.extend(['-dvd-device', args.dvd_device])
-            if args.noskip:
+            if not args.allowskips:
                 cmd.extend(['-noskip'])
             if args.sb:
                 cmd.extend(['-sb', '{0}'.format(args.sb)])
