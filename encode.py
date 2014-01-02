@@ -70,6 +70,7 @@ def main():
             cmd = ['mplayer',
                    'dvd://{0}'.format(title),
                    '-aid', '{0}'.format(args.aid),
+                   '-nosub',
                    '-vf', 'cropdetect']
             if args.dvd_device:
                 cmd.extend(['-dvd-device', args.dvd_device])
