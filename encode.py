@@ -37,9 +37,10 @@ def _parseargs():
                         default='filmdint,',
                         help='Filters, try `pullup,softskip,` for mixed progressing and telecine. Default is `filmdint,`.')
     parser.add_argument('--dvd-device',
+                        '--bluray-device',
                         type=str,
                         default=None,
-                        help='dvd device path')
+                        help='dvd/bluray device path')
     parser.add_argument('--cropdetect',
                         action='store_true',
                         help='preform a crop detect')
@@ -52,6 +53,9 @@ def _parseargs():
     parser.add_argument('--allowskips',
                         action='store_true',
                         help='disable noskip')
+    parser.add_argument('--bluray',
+                        action='store_true',
+                        help='is a bluray')
     args =  parser.parse_args()
     if not args.titles:
         args.titles = [1]
@@ -65,15 +69,21 @@ def _parseargs():
 
 def main():
     args = _parseargs()
+    if args.bluray:
+        device = 'br'
+        devpath = 'bluray'
+    else:
+        device = 'dvd'
+        devpath = 'dvd'
     if args.cropdetect:
         for title in args.titles:
             cmd = ['mplayer',
-                   'dvd://{0}'.format(title),
+                   '{0}://{1}'.format(device, title),
                    '-aid', '{0}'.format(args.aid),
                    '-nosub',
                    '-vf', 'cropdetect']
             if args.dvd_device:
-                cmd.extend(['-dvd-device', args.dvd_device])
+                cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
             if args.sb:
                 cmd.extend(['-sb', '{0}'.format(args.sb)])
             print 'Cropdetect: {0}'.format(cmd)
@@ -84,7 +94,7 @@ def main():
     for title in args.titles:
         for pass_ in range(1, args.passes + 1):
             cmd = ['mencoder',
-                   'dvd://{0}'.format(title),
+                   '{0}://{1}'.format(device, title),
                    '-ofps', '{0}'.format(args.opfs),
                    '-oac', 'copy',
                    '-aid', '{0}'.format(args.aid),
@@ -97,7 +107,7 @@ def main():
                    '-nosub',
                    '-o', '{0}-{1}.avi'.format(args.name, title)]
             if args.dvd_device:
-                cmd.extend(['-dvd-device', args.dvd_device])
+                cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
             if not args.allowskips:
                 cmd.extend(['-noskip'])
             if args.sb:
