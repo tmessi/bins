@@ -50,6 +50,12 @@ def _parseargs():
     parser.add_argument('--audio-delay',
                         default=None,
                         help='delay audio')
+    parser.add_argument('--audiofile',
+                        default=None,
+                        help='use seperate audio file.')
+    parser.add_argument('--audioonly',
+                        action='store_true',
+                        help='use seperate audio file.')
     parser.add_argument('--allowskips',
                         action='store_true',
                         help='disable noskip')
@@ -91,6 +97,22 @@ def main():
             p.wait()
         return
 
+    if args.audioonly:
+        for title in args.titles:
+            cmd = ['mplayer',
+                   '{0}://{1}'.format(device, title),
+                   '-aid', '{0}'.format(args.aid),
+                   '-ao',
+                   'pcm:fast:file={0}-audio.wav'.format(args.name),
+                   '-vc', 'null',
+                   '-vo', 'null']
+            if args.dvd_device:
+                cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
+            print 'Audio rip: {0}'.format(cmd)
+            p = subprocess.Popen(cmd)
+            p.wait()
+        return
+
     for title in args.titles:
         for pass_ in range(1, args.passes + 1):
             cmd = ['mencoder',
@@ -103,17 +125,18 @@ def main():
                    '-vf', '{0}{1}hqdn3d=2:1:2,harddup'.format(args.filters,
                                                               args.crop or ''),
                    '-ni',
-                   '-mc', '0',
                    '-nosub',
                    '-o', '{0}-{1}.avi'.format(args.name, title)]
             if args.dvd_device:
                 cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
             if not args.allowskips:
-                cmd.extend(['-noskip'])
+                cmd.extend(['-noskip', '-mc', '0'])
             if args.sb:
                 cmd.extend(['-sb', '{0}'.format(args.sb)])
             if args.audio_delay:
                 cmd.extend(['-audio-delay', '{0}'.format(args.audio_delay)])
+            if args.audiofile:
+                cmd.extend(['-audiofile', '{0}'.format(args.audiofile)])
             print 'Starting pass {0}: {1}'.format(pass_, cmd)
             p = subprocess.Popen(cmd)
             p.wait()
