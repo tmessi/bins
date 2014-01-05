@@ -92,7 +92,7 @@ def main():
                 cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
             if args.sb:
                 cmd.extend(['-sb', '{0}'.format(args.sb)])
-            print 'Cropdetect: {0}'.format(cmd)
+            print 'Cropdetect: {0}'.format(' '.join(cmd))
             p = subprocess.Popen(cmd)
             p.wait()
         return
@@ -108,7 +108,7 @@ def main():
                    '-vo', 'null']
             if args.dvd_device:
                 cmd.extend(['-{0}-device'.format(devpath), args.dvd_device])
-            print 'Audio rip: {0}'.format(cmd)
+            print 'Audio rip: {0}'.format(' '.join(cmd))
             p = subprocess.Popen(cmd)
             p.wait()
         return
@@ -137,7 +137,7 @@ def main():
                 cmd.extend(['-audio-delay', '{0}'.format(args.audio_delay)])
             if args.audiofile:
                 cmd.extend(['-audiofile', '{0}'.format(args.audiofile)])
-            print 'Starting pass {0}: {1}'.format(pass_, cmd)
+            print 'Starting pass {0}: {1}'.format(pass_, ' '.join(cmd))
             p = subprocess.Popen(cmd)
             p.wait()
 
