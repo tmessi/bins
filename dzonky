@@ -38,7 +38,7 @@ while true; do
     esac
 done
 
-screens=$(xrandr | grep '*' | cut -f 4 -d ' ' | sort -r)
+screens=$(xrandr | grep '*' | cut -f 4 -d ' ')
 
 sn=1
 for screen in $screens; do
