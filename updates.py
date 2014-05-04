@@ -11,11 +11,12 @@ To run simply::
     ./updates.py
 '''
 
+import sys
+
 try:
     import portage
 except ImportError:
     # If no portage, exit quietly since we probably aren't on Gentoo
-    import sys
     sys.exit(-1)
 
 def get_world_entries():
@@ -60,10 +61,16 @@ def get_best_version(atom):
 
 
 def main():
+    '''
+    Main func.
+    '''
     updatable = set()
     for atom in get_world_entries():
         if get_best_version(atom) not in get_installed_versions(atom):
             updatable.add(atom)
+    if '-v' in sys.argv:
+        for atom in updatable:
+            print '{0}'.format(atom)
     print '{0}'.format(len(updatable))
 
 
