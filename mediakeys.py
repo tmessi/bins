@@ -52,7 +52,7 @@ def send_ncmpcpp(command):
     cmd = 'ncmpcpp {}'.format(command)
     kwargs = {'shell': True}
     proc = subprocess.Popen(cmd, **kwargs)
-    out, err = proc.communicate()
+    proc.communicate()
     if proc.returncode == 0:
         return True
     return False

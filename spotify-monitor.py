@@ -43,7 +43,7 @@ def get_status(command):
             artist = meta['xesam:artist'][0].encode('utf-8')
             title = meta['xesam:title'].encode('utf-8')
             res = '{0} - {1}'.format(title, artist)
-    except Exception as e:
+    except Exception:
         res = 'Not Playing'
     return res
 
