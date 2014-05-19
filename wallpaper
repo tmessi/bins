@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 #
 ## A simple script to manage a rotating background image.
 ## Create ~/.wallpaper and place the desired backgrounds into the directory.
