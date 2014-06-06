@@ -14,7 +14,7 @@ optional args:
 pretend=0
 OPTS=$(getopt -o ph --long pretend,help -n "$name" -- "$@")
 
-if [ $? != 0 ]; then echo "option error" >&2; exit 1; fi
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
 
 eval set -- "$OPTS"
 
@@ -43,15 +43,15 @@ else
 fi
 
 for bin in $(ls); do
-    if [ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE"  -a ! $bin == "mplayer.md" ]; then
+    if [[ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE"  -a ! $bin == "mplayer.md" ]]; then
         target="$HOME/bin/$bin"
 
         if [[ $pretend -eq 1 ]]; then
             echo "Would set $bin"
         else
             # Make a .bak of a file or dir
-            if [ ! -h $target ]; then
-                if [ -d $target -o -f $target ]; then
+            if [[ ! -h $target ]]; then
+                if [[ -d $target -o -f $target ]]; then
                     mv $target $target.bak
                 fi
             fi

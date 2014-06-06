@@ -15,7 +15,7 @@ optional args:
 
 OPTS=$(getopt -o h --long help -n "$name" -- "$@")
 
-if [ $? != 0 ]; then echo "option error" >&2; exit 1; fi
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
 
 eval set -- "$OPTS"
 
@@ -32,7 +32,7 @@ while true; do
     esac
 done
 
-if [ $# -eq 1 ]; then
+if [[ $# -eq 1 ]]; then
 	case $1 in
 	full)
 		scrot -m

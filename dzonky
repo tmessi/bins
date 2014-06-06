@@ -18,7 +18,7 @@ optional args:
 pretend=0
 OPTS=$(getopt -o w:h --long width:,help -n "$name" -- "$@")
 
-if [ $? != 0 ]; then echo "option error" >&2; exit 1; fi
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
 
 eval set -- "$OPTS"
 
