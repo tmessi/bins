@@ -43,7 +43,7 @@ else
 fi
 
 for bin in $(ls); do
-    if [[ ! $bin == "README.rst" -a ! $bin == "install.sh" -a ! $bin == "LICENSE"  -a ! $bin == "mplayer.md" ]]; then
+    if [[ ! $bin == "README.rst" ]] && [[ ! $bin == "install.sh" ]] && [[ ! $bin == "LICENSE"  ]] && [[ ! $bin == "mplayer.md" ]]; then
         target="$HOME/bin/$bin"
 
         if [[ $pretend -eq 1 ]]; then
@@ -51,7 +51,7 @@ for bin in $(ls); do
         else
             # Make a .bak of a file or dir
             if [[ ! -h $target ]]; then
-                if [[ -d $target -o -f $target ]]; then
+                if [[ -d $target ]] || [[ -f $target ]]; then
                     mv $target $target.bak
                 fi
             fi
