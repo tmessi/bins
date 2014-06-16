@@ -15,6 +15,8 @@ Where command is one of the following::
     ``toggle``
 '''
 
+# pylint: disable=W0142
+
 import subprocess
 import sys
 

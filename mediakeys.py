@@ -16,6 +16,8 @@ Where command is one of the following::
     ``previous``
 '''
 
+# pylint: disable=W0142,W0703
+
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 import sys

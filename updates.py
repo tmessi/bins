@@ -11,6 +11,8 @@ To run simply::
     ./updates.py
 '''
 
+# pylint: disable=C0103,E1101
+
 import sys
 
 try:
@@ -19,13 +21,14 @@ except ImportError:
     # If no portage, exit quietly since we probably aren't on Gentoo
     sys.exit(-1)
 
+
 def get_world_entries():
     '''
     Parse the world file for atoms.
 
     Return the set of atoms.
     '''
-    f = open("/"+portage.WORLD_FILE, "r")
+    f = open("/" + portage.WORLD_FILE, "r")
     atoms = set()
     for line in f.readlines():
         atom = line[:-1]
