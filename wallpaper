@@ -45,7 +45,7 @@ while true; do
 done
 
 while true; do
-    feh $mode $(find $HOME/.wallpaper/ -name '*' -exec file {} \; | grep -o -P '^.+: \w+ image' | shuf -n 1)
+    feh $mode $(find $HOME/.wallpaper/ -type f -exec file {} \; | awk -F: '{ if ($2 ~/image/) print $1}' | shuf -n 1)
     sleep $duration
 done &
 
