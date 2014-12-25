@@ -6,6 +6,7 @@ name=${0##*/}
 width=800
 screens=1
 fs=10
+conkyconf=""
 
 function print_help() {
     echo "usage: $name [options]
@@ -14,11 +15,12 @@ optional args:
 
     -w|--width    the width of the bar. Default is $width
     -f|--fontsize the font size. Default is $fs
+    -c|--config   specify alternate conky config. Defaults to conky default.
     -h|--help     print this help."
 }
 
 pretend=0
-OPTS=$(getopt -o w:f:h --long width:,fontsize:,help -n "$name" -- "$@")
+OPTS=$(getopt -o w:f:c:h --long width:,fontsize:,config:,help -n "$name" -- "$@")
 
 if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
 
@@ -31,6 +33,9 @@ while true; do
             shift 2;;
         -f|--fontsize)
             fs="$2"
+            shift 2;;
+        -c|--config)
+            conkyconf="-c $2"
             shift 2;;
         -h|--help)
             print_help
@@ -49,6 +54,6 @@ sn=1
 for screen in $screens; do
     xres=${screen%x*}
     xpos=$(echo "$xres-$width" | bc -l)
-    conky 2>/dev/null | dzen2 -ta r -sa r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn "Terminus:style=Regular:pixelsize=$fs:antialias=true" -e '' -xs $sn &
+    conky $conkyconf 2>/dev/null | dzen2 -ta r -sa r -x $xpos -w $width -bg '#000000' -fg '#a1a1a1' -fn "Terminus:style=Regular:pixelsize=$fs:antialias=true" -e '' -xs $sn &
     let sn+=1
 done
