@@ -1,0 +1,7 @@
+#!/bin/bash
+
+xbindkeys
+xautolock -time 30  &>/dev/null &
+hsetroot -solid "#000000"
+xcompmgr -c -n -f &>/dev/null &
+wallpaper --duration 5m --mode fill
