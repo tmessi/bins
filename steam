@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+name=${0##*/}
+
+function print_help() {
+    echo "usage: $name [options]
+
+optional args:
+
+    -a|--alsa        Use alsa audio instead of pulseaudio.
+    -r|--no-runtime  Disable steam runtime. Uses system libs.
+    -h|--help        Print this help.
+    -- <options>     Pass <options> directly to steam."
+}
+
+if [[ -f /usr/bin/steam ]]; then
+    steam_bin="/usr/bin/steam"
+elif [[ -f /usr/games/bin/steam ]]; then
+    steam_bin="/usr/games/bin/steam"
+else
+    echo "steam not found"
+    exit -1
+fi
+
+runtime=1
+audiodriver=pulseaudio
+
+OPTS=$(getopt -o arh --long alsa,no-runtime,help -n "$name" -- "$@")
+
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
+
+eval set -- "$OPTS"
+
+while true; do
+    case "$1" in
+        -a|--asla)
+            audiodriver=alsa
+            shift;;
+        -r|--no-runtime)
+            runtime=0
+            shift;;
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        --)
+            shift; break;;
+        *)
+            echo "Internal error!"; exit 1;;
+    esac
+done
+
+STEAM_RUNTIME=$runtime SDL_AUDIODRIVER=$audiodriver $steam_bin $@
