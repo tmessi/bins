@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ -f $HOME/.main.quicktask ]]; then
+    vim $HOME/.main.quicktask
+else
+    vim -c QTInit -c "w $HOME/.main.quicktask"
+fi
+
