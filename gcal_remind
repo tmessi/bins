@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+## A simple script get google calendar reminders for conky to display
+## Requires the gcalcli is installed and already setup with oauth token.
+
+name=${0##*/}
+duration=5m
+remind_time=15
+
+function print_help() {
+    echo "usage: $name [options]
+
+optional args:
+
+    -t|--time     time (in minutes) to remind before event. Default is 15.
+    -d|--duration amount of time until next reminder check. Default is 5m.
+    -h|--help     print this help."
+}
+
+pretend=0
+OPTS=$(getopt -o d:t:h --long duration:,time:,help -n "$name" -- "$@")
+
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
+
+eval set -- "$OPTS"
+
+while true; do
+    case "$1" in
+        -d|--duration)
+            duration="$2"
+            shift 2;;
+        -t|--time)
+            remind_time="$2"
+            shift 2;;
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        --)
+            shift; break;;
+        *)
+            echo "Internal error!"; exit 1;;
+    esac
+done
+
+gcalcmd=$(which gcalcli)
+remind_file="$HOME/.gcal_remind"
+
+if [[ ! -x $gcalcmd ]]; then
+    exit -1
+fi
+
+while true; do
+    remind=$($gcalcmd remind $remind_time "echo %s")
+    if [[ $remind ]]; then
+        echo -n $remind > $remind_file
+    else
+        [[ -f $remind_file ]] && rm $remind_file
+    fi
+    sleep $duration
+done &
