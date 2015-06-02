@@ -74,7 +74,9 @@ def main():
     if '-v' in sys.argv:
         for atom in updatable:
             print '{0}'.format(atom)
-    print '{0}'.format(len(updatable))
+    num_updates = len(updatable)
+    if num_updates > 0:
+        print '{0}'.format(len(updatable))
 
 
 if __name__ == "__main__":
