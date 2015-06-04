@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+bat_info="$(cat /proc/acpi/battery/BAT0/info | sed '/cycle count/d')"
+bat_state="$(cat /proc/acpi/battery/BAT0/state | tail -n+2)"
+
+width=500
+screen=$(xrandr | grep '*' | cut -f 4 -d ' ')
+xres=${screen%x*}
+xpos=$(echo "$xres-$width" | bc -l)
+
+(
+echo "Battery Information"
+echo "$bat_info"
+echo "$bat_state"
+) | dzen2 -p \
+    -x $xpos -y 26 \
+    -w $width \
+    -l 19 -sa l -ta c \
+    -bg '#262626' \
+    -fg '#bcbcbc' \
+    -fn "Terminus:style=Regular:pixelsize=24:antialias=true" \
+    -title-name 'popup_batinfo' \
+    -e 'onstart=uncollapse;button1=exit;button3=exit'
