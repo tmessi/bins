@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-bat_info="$(cat /proc/acpi/battery/BAT0/info | sed '/cycle count/d')"
-bat_state="$(cat /proc/acpi/battery/BAT0/state | tail -n+2)"
-
 width=500
 screen=$(xrandr | grep '*' | cut -f 4 -d ' ')
 xres=${screen%x*}
 xpos=$(echo "$xres-$width" | bc -l)
+
+bat_info="$(cat /proc/acpi/battery/BAT0/info | sed '/cycle count/d')"
+bat_state="$(cat /proc/acpi/battery/BAT0/state | tail -n+2)"
 
 (
 echo "Battery Information"
