@@ -59,6 +59,6 @@ sn=1
 for screen in $screens; do
     xres=${screen%x*}
     xpos=$(echo "$xres-$width" | bc -l)
-    conky $conkyconf 2>/dev/null | dzen2 -ta r -sa r -x $xpos -h $height -y 1 -w $width -bg '#000000' -fg '#a1a1a1' -fn "Terminus:style=Regular:pixelsize=$fs:antialias=true" -e 'button3=lower;sigusr1=raise' -xs $sn &
+    conky $conkyconf 2>/dev/null | dzen2 -ta r -sa r -x $xpos -h $height -y 1 -w $width -bg '#262626' -fg '#bcbcbc' -fn "Terminus:style=Regular:pixelsize=$fs:antialias=true" -e 'button3=lower;sigusr1=raise' -xs $sn &
     let sn+=1
 done
