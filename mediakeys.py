@@ -40,7 +40,7 @@ def send_spotify(command):
             spotify.Stop()
         elif command == 'next':
             spotify.Next()
-        elif command == 'previous':
+        elif command == 'prev':
             spotify.Previous()
         return True
     except Exception:
@@ -64,7 +64,7 @@ def main(arg):
     '''
     Pass the arg to media players.
     '''
-    if arg in ('toggle', 'stop', 'next', 'previous'):
+    if arg in ('toggle', 'stop', 'next', 'prev'):
         # First try sending command to Spotify, then ncmpcpp
         return send_spotify(arg) or send_ncmpcpp(arg)
     return False
