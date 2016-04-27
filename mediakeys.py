@@ -16,12 +16,32 @@ Where command is one of the following::
     ``previous``
 '''
 
-# pylint: disable=W0142,W0703
+# pylint: disable=W0703
 
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 import sys
 import subprocess
+
+
+def send_pandora(command):
+    '''
+    Send the command to pithos using dbus interface.
+    '''
+    try:
+        bus = dbus.SessionBus()
+        pithos_object = bus.get_object("net.kevinmehall.Pithos",
+                                       "/net/kevinmehall/Pithos")
+        pithos = dbus.Interface(pithos_object, "net.kevinmehall.Pithos")
+        if command == 'toggle':
+            pithos.PlayPause()
+        elif command == 'stop':
+            pithos.Stop()
+        elif command == 'next':
+            pithos.SkipSong()
+        return True
+    except dbus.exceptions.DBusException:
+        return False
 
 
 def send_spotify(command):
@@ -66,7 +86,7 @@ def main(arg):
     '''
     if arg in ('toggle', 'stop', 'next', 'prev'):
         # First try sending command to Spotify, then ncmpcpp
-        return send_spotify(arg) or send_ncmpcpp(arg)
+        return send_pandora(arg) or send_spotify(arg) or send_ncmpcpp(arg)
     return False
 
 
