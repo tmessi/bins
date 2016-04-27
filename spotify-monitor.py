@@ -14,11 +14,31 @@ Where command is one of the following::
     ``playing``
 '''
 
-# pylint: disable=W0142,W0703
+# pylint: disable=W0703
 
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 import sys
+
+
+def get_pandora_status(command):
+    '''
+    Get status for pithos/pandora
+    '''
+    try:
+        bus = dbus.SessionBus()
+        pithos_object = bus.get_object("net.kevinmehall.Pithos",
+                                       "/net/kevinmehall/Pithos")
+        pithos = dbus.Interface(pithos_object, "net.kevinmehall.Pithos")
+        if command == 'playback':
+            res = 'Playing' if pithos.IsPlaying() else 'Paused'
+        elif command == 'playing':
+            info = dict((str(k), str(v)) for k, v in pithos.GetCurrentSong().items())
+            res = '{0} - {1}'.format(info['title'], info['artist'])
+    except dbus.exceptions.DBusException:
+        res = None
+    return res
+
 
 def get_status(command):
     '''
@@ -37,8 +57,9 @@ def get_status(command):
         spotify = dbus.Interface(spotify_bus,
                                  'org.freedesktop.DBus.Properties')
         if command == 'playback':
-            res = spotify.Get('org.mpris.MediaPlayer2.Player',
-                              'PlaybackStatus')
+            #res = spotify.Get('org.mpris.MediaPlayer2.Player',
+            #                  'PlaybackStatus')
+            res = 'Playing'
         elif command == 'playing':
             meta = spotify.Get('org.mpris.MediaPlayer2.Player',
                                'Metadata')
@@ -53,9 +74,16 @@ def main(arg):
     '''
     Pass the arg to spotify.
     '''
-    if arg in ('playback', 'playing'):
-        # First try sending command to Spotify
-        res = get_status(arg)
+    if arg == 'playback':
+        res = get_pandora_status(arg)
+        if not res or res == 'Not Playing':
+            res = get_status(arg)
+        print res
+
+    elif arg == 'playing':
+        res = get_pandora_status(arg)
+        if not res:
+            res = get_status(arg)
         print res
 
 if __name__ == '__main__':
