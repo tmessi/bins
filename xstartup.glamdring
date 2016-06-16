@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#xrandr --setprovideroutputsource modesetting NVIDIA-0
+#xrandr --auto
+
+xbindkeys
+xautolock -time 15  &>/dev/null &
+hsetroot -solid "#000000"
+xcompmgr -c -n -f &>/dev/null &
+wallpaper --duration 5m --mode fill
+# gcal_remind
