@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sink_match="$1"
+
+sink=$(pactl list short sinks | grep $sink_match | awk '{print $2}')
+pacmd set-default-sink $sink
