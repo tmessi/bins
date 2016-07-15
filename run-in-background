@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Run something in the background. Useful for udev...
+
+$@ &
