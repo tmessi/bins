@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Sleep so udev and finish its thing and inform pulse audio about the device
+sleep 1
 sink_match="$1"
 
 sink=$(pactl list short sinks | grep $sink_match | awk '{print $2}')
