@@ -121,8 +121,11 @@ def vol_percent():
     '''
     Get current volume as a percentage
     '''
-    percent = int(get_vol() / float(MAX_VOL) * 100)
-    print percent
+    if muted():
+        print 0
+    else:
+        percent = int(get_vol() / float(MAX_VOL) * 100)
+        print percent
 
 
 def main(arg):
@@ -145,8 +148,9 @@ def main(arg):
             cmd = cmd.format('set-sink-volume', sink_name, new_vol)
         if cmdrun(cmd)['retcode'] == 0:
             return True
-    elif arg in ('volume',):
+    elif arg == 'volume':
         vol_percent()
+        return True
     return False
 
 
