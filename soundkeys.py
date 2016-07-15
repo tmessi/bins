@@ -13,21 +13,27 @@ Where command is one of the following::
     ``raise``
     ``lower``
     ``toggle``
+    ``volume``
 '''
-
-# pylint: disable=W0142
-
 import subprocess
 import sys
 
-# Set this to match the pci bus
-SINK_NAME = 'alsa_output.pci-0000_00_1b.0.analog-stereo'
 # The amount to increase/decrease the volume
 VOL_STEP = int('0x01000', 0)
 # The max volume
 MAX_VOL = int('0x10000', 0)
 # The min volume
 MIN_VOL = int('0x00000', 0)
+
+
+def _get_def_sink():
+    '''
+    Get the default/fallback sink name
+    '''
+    cmd = 'pacmd dump | grep "^set-default-sink"'
+    out = cmdrun(cmd)['stdout']
+    sink = out.split()[1]
+    return sink
 
 
 def cmdrun(cmd):
@@ -64,7 +70,8 @@ def muted():
 
     Return ``true`` if muted, ``false`` if not.
     '''
-    cmd = 'pacmd dump | grep "^set-sink-mute {}"'.format(SINK_NAME)
+    sink_name = _get_def_sink()
+    cmd = 'pacmd dump | grep "^set-sink-mute {}"'.format(sink_name)
     out = cmdrun(cmd)['stdout']
     state = out.split()[2]
     if state == 'yes':
@@ -79,7 +86,8 @@ def get_vol():
 
     Return the current volume value.
     '''
-    cmd = 'pacmd dump | grep "^set-sink-volume {}"'.format(SINK_NAME)
+    sink_name = _get_def_sink()
+    cmd = 'pacmd dump | grep "^set-sink-volume {}"'.format(sink_name)
     out = cmdrun(cmd)['stdout']
     vol = out.split()[2]
     return int(vol, 0)
@@ -109,25 +117,36 @@ def dec_vol():
     return hex(new_vol)
 
 
+def vol_percent():
+    '''
+    Get current volume as a percentage
+    '''
+    percent = int(get_vol() / float(MAX_VOL) * 100)
+    print percent
+
+
 def main(arg):
     '''
     Run the command
     '''
+    sink_name = _get_def_sink()
     if arg in ('raise', 'lower', 'toggle'):
         cmd = 'pactl {} {} {}'
         if arg == 'toggle':
             if muted():
-                cmd = cmd.format('set-sink-mute', SINK_NAME, 0)
+                cmd = cmd.format('set-sink-mute', sink_name, 0)
             else:
-                cmd = cmd.format('set-sink-mute', SINK_NAME, 1)
+                cmd = cmd.format('set-sink-mute', sink_name, 1)
         elif arg == 'raise':
             new_vol = inc_vol()
-            cmd = cmd.format('set-sink-volume', SINK_NAME, new_vol)
+            cmd = cmd.format('set-sink-volume', sink_name, new_vol)
         elif arg == 'lower':
             new_vol = dec_vol()
-            cmd = cmd.format('set-sink-volume', SINK_NAME, new_vol)
+            cmd = cmd.format('set-sink-volume', sink_name, new_vol)
         if cmdrun(cmd)['retcode'] == 0:
             return True
+    elif arg in ('volume',):
+        vol_percent()
     return False
 
 
