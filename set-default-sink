@@ -9,4 +9,13 @@ sink_match="$1"
 
 sudo -u $USER_NAME pactl --server $PULSE_SERVER list short sinks >> /tmp/debug.log
 sink=$(sudo -u $USER_NAME pactl --server $PULSE_SERVER list short sinks | grep $sink_match | awk '{print $2}')
-[[ -n $sink ]] && sudo -u $USER_NAME pactl --server $PULSE_SERVER set-default-sink $sink
+if [[ -n $sink ]]; then
+    sudo -u $USER_NAME pactl --server $PULSE_SERVER set-default-sink $sink
+else
+    sink=0
+fi
+
+sink_inputs=$(sudo -u $USER_NAME pactl --server $PULSE_SERVER list short sink-inputs | awk '{print $1}')
+for input in $sink_inputs; do
+    sudo -u $USER_NAME pactl --server $PULSE_SERVER move-sink-input $input $sink
+done
