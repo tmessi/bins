@@ -50,4 +50,5 @@ while true; do
     esac
 done
 
-STEAM_RUNTIME=$runtime SDL_AUDIODRIVER=$audiodriver $steam_bin $@
+# STEAM_RUNTIME=$runtime SDL_AUDIODRIVER=$audiodriver $steam_bin $@
+$steam_bin $@

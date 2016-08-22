@@ -57,8 +57,8 @@ def get_status(command):
         spotify = dbus.Interface(spotify_bus,
                                  'org.freedesktop.DBus.Properties')
         if command == 'playback':
-            #res = spotify.Get('org.mpris.MediaPlayer2.Player',
-            #                  'PlaybackStatus')
+            # res = spotify.Get('org.mpris.MediaPlayer2.Player',
+            #                   'PlaybackStatus')
             res = 'Playing'
         elif command == 'playing':
             meta = spotify.Get('org.mpris.MediaPlayer2.Player',
