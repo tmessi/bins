@@ -10,149 +10,192 @@ from ewmh import EWMH
 from razer.client import DeviceManager
 
 
-COLORS = {
-    'clear': (0, 0, 0),
-    'gray': (32, 32, 32),
-    'green': (96, 128, 0),
-    'blue': (0, 96, 128),
-    'yellow': (64, 64, 0),
-    'red': (64, 0, 0),
-}
+class KeyboardLights(object):
+    '''
+    Manager lights for the keyboard
+    '''
+    colors = {
+        'clear': (0, 0, 0),
+        'gray': (32, 32, 32),
+        'green': (96, 128, 0),
+        'blue': (0, 96, 128),
+        'yellow': (64, 64, 0),
+        'red': (128, 8, 0),
+    }
+
+    def __init__(self, battery=True):
+        self.device = None
+        self.flash = True
+
+        # Create a DeviceManager. This is used to get specific devices
+        device_manager = DeviceManager()
+        # Disable daemon effect syncing.
+        # Without this, the daemon will try to set the lighting effect to every device.
+        device_manager.sync_effects = False
+        for device in device_manager.devices:
+            if device.type == 'keyboard':
+                self.device = device
+                break
+
+        self.workspace_state = WorkspaceState()
+
+        if battery:
+            self.battery_state = BatteryState(colors=self.colors)
+
+    def battery_colors(self):
+        '''
+        Set colors for battery life
+        '''
+        percent = self.battery_state.percentage
+        charged = self.battery_state.charged
+        color = self.battery_state.color
+        charged_row = int((self.device.fx.advanced.rows - 1) * percent)
+        bat_cols = [0, 1]
+        for i in range(self.device.fx.advanced.rows):
+            if i == charged_row and not charged and self.flash:
+                for col in bat_cols:
+                    self.device.fx.advanced.matrix[i, col] = color
+            elif i <= charged_row:
+                for col in bat_cols:
+                    self.device.fx.advanced.matrix[i, col] = color
+            else:
+                for col in bat_cols:
+                    self.device.fx.advanced.matrix[i, col] = self.colors['clear']
+
+    def workspae_colors(self):
+        '''
+        Set colors for workspaces
+        '''
+        current = self.workspace_state.current
+        active = self.workspace_state.active
+        urgent = self.workspace_state.urgent
+        total = self.workspace_state.total
+
+        for workspace in range(0, total):
+            if workspace == current:
+                color = self.colors['green']
+            elif workspace in urgent:
+                color = self.colors['red']
+            elif workspace in active:
+                color = self.colors['blue']
+            else:
+                color = self.colors['gray']
+
+            if workspace > 9:
+                row = 0
+                col = workspace - 9 + 1
+            else:
+                row = 1
+                col = workspace + 2
+            self.device.fx.advanced.matrix[row, col] = color
+
+    def draw(self):
+        '''
+        Draw the colors
+        '''
+        self.flash = not self.flash
+
+        self.battery_colors()
+        self.workspae_colors()
+        self.device.fx.advanced.draw()
 
 
-def batinfo():
+class BatteryState(object):
     '''
-    Get current battery status
+    Track battery level
     '''
-    try:
-        sysbus = dbus.SystemBus()
-        bat_bus = sysbus.get_object(
+    def __init__(self, colors):
+        self.colors = colors
+        self.sysbus = dbus.SystemBus()
+        battery_bus = self.sysbus.get_object(
             'org.freedesktop.UPower',
             '/org/freedesktop/UPower/devices/battery_BAT0',
         )
-        bat_props = dbus.Interface(
-            bat_bus,
+        self.properties = dbus.Interface(
+            battery_bus,
             'org.freedesktop.DBus.Properties',
         )
-        percentage = bat_props.Get(
+
+    @property
+    def percentage(self):
+        ''' Get percent left '''
+        percentage = self.properties.Get(
             'org.freedesktop.UPower.Device',
             'Percentage',
         )
-        state = bat_props.Get(
+        return percentage / 100.0
+
+    @property
+    def color(self):
+        ''' Get color based on percentage '''
+        percent = self.percentage
+        if percent >= .5:
+            return self.colors['green']
+
+        if percent >= .2:
+            return self.colors['yellow']
+
+        return self.colors['red']
+
+    @property
+    def state(self):
+        ''' Current state '''
+        return self.properties.Get(
             'org.freedesktop.UPower.Device',
             'State',
         )
-        return percentage / 100.0, state
-    except dbus.exceptions.DBusException:
-        return None, None
+
+    @property
+    def charged(self):
+        ''' Check if charged '''
+        return self.state not in [1, 2]
 
 
-def charging(state):
+class WorkspaceState(object):
     '''
-    charging or discharging
+    Track workspace state
     '''
-    return state in [1, 2]
+    def __init__(self):
+        self.ewmh = EWMH()
 
+    @property
+    def current(self):
+        ''' get current workspace number '''
+        return self.ewmh.getCurrentDesktop()
 
-def get_colors(base, adjust):
-    '''
-    amplify colors
-    '''
-    apmlified = {}
-    for name, rgb in base.items():
-        apmlified[name] = tuple(adjust * c for c in rgb)
-    return apmlified
+    @property
+    def total(self):
+        ''' get total number of workspaces '''
+        return self.ewmh.getNumberOfDesktops()
 
+    @property
+    def active(self):
+        ''' get all active workspaces '''
+        return set([
+            self.ewmh.getWmDesktop(w) for w in self.ewmh.getClientList()
+        ])
 
-def desktops(ewmh):
-    '''
-    Get desktops
-    '''
-    current = ewmh.getCurrentDesktop()
-    active = set()
-    urgent = set()
-    total = ewmh.getNumberOfDesktops()
-    for win in ewmh.getClientList():
-        workspace = ewmh.getWmDesktop(win)
-        active.add(workspace)
-        hints = win.get_wm_hints()
-        if hints is not None and hints['flags'] & Xutil.UrgencyHint:
-            urgent.add(workspace)
-    return current, active, urgent, total
-
-
-def battery_colors(device, flash):
-    '''
-    Set colors for battery life
-    '''
-    bat, status = batinfo()
-    bat = int((device.fx.advanced.rows - 1) * bat)
-    if bat >= .5:
-        color = COLORS['green']
-    elif bat >= .2:
-        color = COLORS['yellow']
-    else:
-        color = COLORS['red']
-
-    bat_cols = [0, 1]
-    for i in range(device.fx.advanced.rows):
-        if i == bat and charging(status) and flash:
-            for col in bat_cols:
-                device.fx.advanced.matrix[i, col] = color
-        elif i <= bat:
-            for col in bat_cols:
-                device.fx.advanced.matrix[i, col] = color
-        else:
-            for col in bat_cols:
-                device.fx.advanced.matrix[i, col] = COLORS['clear']
-
-
-def workspae_colors(device, ewmh):
-    '''
-    Set colors for workspaces
-    '''
-    current, active, urgent, total = desktops(ewmh)
-    for workspace in range(0, total):
-        if workspace == current:
-            color = COLORS['green']
-        elif workspace in urgent:
-            color = COLORS['red']
-        elif workspace in active:
-            color = COLORS['blue']
-        else:
-            color = COLORS['gray']
-
-        if workspace > 9:
-            row = 0
-            col = workspace - 9 + 1
-        else:
-            row = 1
-            col = workspace + 2
-        device.fx.advanced.matrix[row, col] = color
+    @property
+    def urgent(self):
+        ''' get workspaces with urgent windows '''
+        urgent = set()
+        for win in self.ewmh.getClientList():
+            workspace = self.ewmh.getWmDesktop(win)
+            hints = win.get_wm_hints()
+            if hints is not None and hints['flags'] & Xutil.UrgencyHint:
+                urgent.add(workspace)
+        return urgent
 
 
 def main():
     '''
     Main entry point
     '''
-    # Create a DeviceManager. This is used to get specific devices
-    device_manager = DeviceManager()
-    # Disable daemon effect syncing.
-    # Without this, the daemon will try to set the lighting effect to every device.
-    device_manager.sync_effects = False
-    ewmh = EWMH()
+    keyboard = KeyboardLights()
+    while True:
+        keyboard.draw()
+        time.sleep(0.5)
 
-    for device in device_manager.devices:
-        # rows, cols = device.fx.advanced.rows, device.fx.advanced.cols
-        flash = True
-        while True:
-            flash = not flash
-
-            battery_colors(device, flash)
-            workspae_colors(device, ewmh)
-
-            device.fx.advanced.draw()
-            time.sleep(0.5)
 
 if __name__ == '__main__':
     main()
