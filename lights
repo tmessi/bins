@@ -176,7 +176,7 @@ class WorkspaceState(object):
         for win in self.ewmh.getClientList():
             try:
                 active_ws.add(self.ewmh.getWmDesktop(win))
-            except TypeError:
+            except Exception:
                 pass
         return active_ws
 
@@ -185,10 +185,13 @@ class WorkspaceState(object):
         ''' get workspaces with urgent windows '''
         urgent = set()
         for win in self.ewmh.getClientList():
-            workspace = self.ewmh.getWmDesktop(win)
-            hints = win.get_wm_hints()
-            if hints is not None and hints['flags'] & Xutil.UrgencyHint:
-                urgent.add(workspace)
+            try:
+                workspace = self.ewmh.getWmDesktop(win)
+                hints = win.get_wm_hints()
+                if hints is not None and hints['flags'] & Xutil.UrgencyHint:
+                    urgent.add(workspace)
+            except Exception:
+                pass
         return urgent
 
 
