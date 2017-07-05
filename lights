@@ -52,9 +52,10 @@ class KeyboardLights(object):
         charged_row = int((self.device.fx.advanced.rows - 1) * percent)
         bat_cols = [0, 1]
         for i in range(self.device.fx.advanced.rows):
-            if i == charged_row and not charged and self.flash:
+            if i == charged_row:
+                ccolor = color if self.flash or charged else self.colors['clear']
                 for col in bat_cols:
-                    self.device.fx.advanced.matrix[i, col] = color
+                    self.device.fx.advanced.matrix[i, col] = ccolor
             elif i <= charged_row:
                 for col in bat_cols:
                     self.device.fx.advanced.matrix[i, col] = color
@@ -171,9 +172,13 @@ class WorkspaceState(object):
     @property
     def active(self):
         ''' get all active workspaces '''
-        return set([
-            self.ewmh.getWmDesktop(w) for w in self.ewmh.getClientList()
-        ])
+        active_ws = set()
+        for win in self.ewmh.getClientList():
+            try:
+                active_ws.add(self.ewmh.getWmDesktop(win))
+            except TypeError:
+                pass
+        return active_ws
 
     @property
     def urgent(self):
