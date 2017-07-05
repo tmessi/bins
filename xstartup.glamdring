@@ -4,4 +4,5 @@ xbindkeys
 xautolock -time 15  &>/dev/null &
 wallpaper --duration 5m --mode fill
 xset s off -dpms
+lights &
 # gcal_remind
