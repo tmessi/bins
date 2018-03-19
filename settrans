@@ -1,0 +1,3 @@
+#!/bin/bash
+xid=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)
+transset --id $xid 0.9
