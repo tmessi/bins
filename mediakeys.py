@@ -71,7 +71,7 @@ def send_ncmpcpp(command):
     '''
     Pass the command to ncmpcpp using a subprocess.
     '''
-    cmd = 'ncmpcpp {}'.format(command)
+    cmd = 'mpc {}'.format(command)
     kwargs = {'shell': True}
     proc = subprocess.Popen(cmd, **kwargs)
     proc.communicate()

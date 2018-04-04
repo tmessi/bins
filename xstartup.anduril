@@ -8,4 +8,5 @@ xbindkeys
 hsetroot -solid "#000000"
 xcompmgr -c -n -f &>/dev/null &
 wallpaper --duration 5m --mode fill
-gcal_remind
+#gcal_remind
+ synclient TapButton1=1
