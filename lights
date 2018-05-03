@@ -296,9 +296,9 @@ class Layout(object):
                 'j',
                 'k',
                 'l',
-                '0',
-                '^',
-                '$',
+                #'0',
+                #'^',
+                #'$',
                 'f',
                 't',
                 ';',
@@ -339,7 +339,6 @@ class Layout(object):
                 ',',
                 '.',
                 '/',
-                '\\',
             ],
             'normal': [
                 'esc',
@@ -366,7 +365,7 @@ class Layout(object):
         for key in self.vim_keys['insert']['typing']:
             self.set_color(key, self.colors['blue'])
 
-        for key in self._vim_keys['insert']['normal']:
+        for key in self.vim_keys['insert']['normal']:
             self.set_color(key, self.colors['red'])
 
     def set_vim_normal(self):
