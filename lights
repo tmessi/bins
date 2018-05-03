@@ -7,7 +7,7 @@ import dbus
 
 from Xlib import Xutil
 from ewmh import EWMH
-from razer.client import DeviceManager
+from openrazer.client import DeviceManager
 
 KEYS = {
     'Razer Blade Stealth (QHD)': {
@@ -40,8 +40,12 @@ KEYS = {
         '0': (1, 11),
         '-': (1, 12),
         '=': (1, 13),
+        'backspace_1': (1, 14),
+        'backspace_2': (1, 15),
         'backspace': [(1, 14), (1, 15)],
 
+        'tab_1': (2, 0),
+        'tab_2': (2, 1),
         'tab': [(2, 0), (2, 1)],
         'q': (2, 2),
         'w': (2, 3),
@@ -55,8 +59,12 @@ KEYS = {
         'p': (2, 11),
         '[': (2, 12),
         ']': (2, 13),
+        '\\_1': (2, 14),
+        '\\_2': (2, 15),
         '\\': [(2, 14), (2, 15)],
 
+        'caps_1': (3, 0),
+        'caps_2': (3, 1),
         'caps': [(3, 0), (3, 1)],
         'a': (3, 2),
         's': (3, 3),
@@ -69,8 +77,13 @@ KEYS = {
         'l': (3, 10),
         ';': (3, 11),
         '\'': (3, 12),
+        'enter_1': (3, 13),
+        'enter_2': (3, 14),
+        'enter_3': (3, 15),
         'enter': [(3, 13), (3, 14), (3, 15)],
 
+        'lshift_1': (4, 0),
+        'lshift_2': (4, 1),
         'lshift': [(4, 0), (4, 1)],
         'z': (4, 2),
         'x': (4, 3),
@@ -82,6 +95,9 @@ KEYS = {
         ',': (4, 9),
         '.': (4, 10),
         '/': (4, 11),
+        'rshift_1': (4, 12),
+        'rshift_2': (4, 13),
+        'rshift_3': (4, 14),
         'rshift': [(4, 12), (4, 13), (4, 14)],
 
         'lctrl': (5, 0),
@@ -396,7 +412,7 @@ class KeyboardLights(object):
         self.device = None
         self.flash = True
         self.battery_state = None
-        self.vim_mode = 'normal'
+        self.vim_mode = 'off'
 
         # Create a DeviceManager. This is used to get specific devices
         device_manager = DeviceManager()
@@ -404,9 +420,12 @@ class KeyboardLights(object):
         # Without this, the daemon will try to set the lighting effect to every device.
         device_manager.sync_effects = False
         for device in device_manager.devices:
-            if device.type == 'keyboard':
+            if (device.type == 'keyboard' and device.name == 'Razer Blade Stealth (QHD)'):
                 self.device = device
                 break
+        if not self.device:
+            print('No device found')
+
         self.layout = Layout(self.device, self.colors)
         self._vim_colors = {
             'off': self.layout.set_vim_off,
@@ -583,7 +602,7 @@ def main():
     '''
     Main entry point
     '''
-    keyboard = KeyboardLights(battery=False)
+    keyboard = KeyboardLights(battery=True)
     while True:
         keyboard.draw()
         time.sleep(0.5)
