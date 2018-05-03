@@ -69,6 +69,7 @@ def get_status(command):
         res = 'Not Playing'
     return res
 
+
 def main(arg):
     '''
     Pass the arg to spotify.
@@ -84,6 +85,7 @@ def main(arg):
         if not res:
             res = get_status(arg)
         print res
+
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
