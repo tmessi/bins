@@ -71,7 +71,12 @@ def send_ncmpcpp(command):
     '''
     Pass the command to ncmpcpp using a subprocess.
     '''
-    cmd = 'mpc {}'.format(command)
+    if command == 'prev':
+        cmd = 'mpc repeat off && mpc {} && mpc repeat on'
+    else:
+        cmd = 'mpc {}'
+
+    cmd = cmd.format(command)
     kwargs = {'shell': True}
     proc = subprocess.Popen(cmd, **kwargs)
     proc.communicate()
