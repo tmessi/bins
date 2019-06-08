@@ -1,0 +1,7 @@
+#!/bin/bash
+xbindkeys
+xcompmgr -c -n -f &>/dev/null &
+wp --mode scale &
+xset s off -dpms
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
