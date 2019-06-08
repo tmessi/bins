@@ -1,6 +1,0 @@
-#!/bin/bash
-
-pushd $HOME/grive
-drive pull -ignore-name-clashes -no-clobber -no-prompt
-drive push -ignore-name-clashes -no-clobber -no-prompt
-popd
