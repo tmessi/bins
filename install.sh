@@ -62,4 +62,11 @@ for bin in $(ls); do
     fi
 done
 
+if [[ $pretend -eq 1 ]]; then
+    echo "Would remove the following broken links"
+    find $HOME/bin -xtype l
+else
+    find $HOME/bin -xtype l -delete
+fi
+
 popd &> /dev/null
