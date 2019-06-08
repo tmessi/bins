@@ -5,5 +5,5 @@ xrandr --auto
 xbindkeys
 hsetroot -solid "#000000"
 xcompmgr -c -n -f &>/dev/null &
-wallpaper --duration 5m --mode fill
+wp &
 xset s off -dpms
