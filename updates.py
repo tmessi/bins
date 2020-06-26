@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 '''
 Simple script to get the number of world updates.
 
@@ -73,10 +73,10 @@ def main():
             updatable.add(atom)
     if '-v' in sys.argv:
         for atom in updatable:
-            print '{0}'.format(atom)
+            print('{0}'.format(atom))
     num_updates = len(updatable)
     if num_updates > 0:
-        print '{0}'.format(len(updatable))
+        print('{0}'.format(len(updatable)))
 
 
 if __name__ == "__main__":
