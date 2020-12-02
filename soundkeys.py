@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 '''
 Simple script to adjust volume with pulseaudio via ``pacmd``
 
@@ -57,8 +57,8 @@ def cmdrun(cmd):
     proc = subprocess.Popen(cmd, **kwargs)
     out, err = proc.communicate()
 
-    ret['stdout'] = out
-    ret['stderr'] = err
+    ret['stdout'] = out.decode()
+    ret['stderr'] = err.decode()
     ret['pid'] = proc.pid
     ret['retcode'] = proc.returncode
     return ret
@@ -122,10 +122,10 @@ def vol_percent():
     Get current volume as a percentage
     '''
     if muted():
-        print 0
+        print('0')
     else:
         percent = int(get_vol() / float(MAX_VOL) * 100)
-        print percent
+        print(percent)
 
 
 def main(arg):
