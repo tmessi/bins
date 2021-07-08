@@ -1,7 +1,8 @@
 #!/bin/bash
 xbindkeys
 xcompmgr -c -n -f &>/dev/null &
-wp --mode scale &
+wp --update-frequency 24h --mode scale &
 xset s off -dpms
 xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
+redshift &
