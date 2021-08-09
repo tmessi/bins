@@ -1,0 +1,10 @@
+#!/bin/bash
+
+xrandr --auto
+
+xbindkeys
+hsetroot -solid "#000000"
+xcompmgr -c -n -f &>/dev/null &
+wp &
+redshift -l 39.2623:-76.3639 &
+xset s off -dpms
