@@ -26,14 +26,14 @@ MAX_VOL = int('0x10000', 0)
 MIN_VOL = int('0x00000', 0)
 
 
-def _get_def_sink():
+def _get_def(t='sink'):
     '''
-    Get the default/fallback sink name
+    Get the default/fallback sink/source name
     '''
-    cmd = 'pacmd dump | grep "^set-default-sink"'
+    cmd = 'pacmd dump | grep "^set-default-{}"'.format(t)
     out = cmdrun(cmd)['stdout']
-    sink = out.split()[1]
-    return sink
+    default = out.split()[1]
+    return default
 
 
 def cmdrun(cmd):
@@ -64,14 +64,14 @@ def cmdrun(cmd):
     return ret
 
 
-def muted():
+def muted(t='sink'):
     '''
     Check if the audio is muted.
 
     Return ``true`` if muted, ``false`` if not.
     '''
-    sink_name = _get_def_sink()
-    cmd = 'pacmd dump | grep "^set-sink-mute {}"'.format(sink_name)
+    default = _get_def(t)
+    cmd = 'pacmd dump | grep "^set-{}-mute {}"'.format(t, default)
     out = cmdrun(cmd)['stdout']
     state = out.split()[2]
     if state == 'yes':
@@ -80,14 +80,14 @@ def muted():
     return False
 
 
-def get_vol():
+def get_vol(t='sink'):
     '''
     Get the current volume.
 
     Return the current volume value.
     '''
-    sink_name = _get_def_sink()
-    cmd = 'pacmd dump | grep "^set-sink-volume {}"'.format(sink_name)
+    default = _get_def(t)
+    cmd = 'pacmd dump | grep "^set-{}-volume {}"'.format(t, default)
     out = cmdrun(cmd)['stdout']
     vol = out.split()[2]
     return int(vol, 0)
@@ -117,26 +117,25 @@ def dec_vol():
     return hex(new_vol)
 
 
-def vol_percent():
+def vol_percent(t="sink"):
     '''
     Get current volume as a percentage
     '''
-    if muted():
+    if muted(t):
         print('0')
     else:
-        percent = int(get_vol() / float(MAX_VOL) * 100)
+        percent = int(get_vol(t) / float(MAX_VOL) * 100)
         print(percent)
-
 
 def main(arg):
     '''
     Run the command
     '''
-    sink_name = _get_def_sink()
     if arg in ('raise', 'lower', 'toggle'):
+        sink_name = _get_def('sink')
         cmd = 'pactl {} {} {}'
         if arg == 'toggle':
-            if muted():
+            if muted('sink'):
                 cmd = cmd.format('set-sink-mute', sink_name, 0)
             else:
                 cmd = cmd.format('set-sink-mute', sink_name, 1)
@@ -148,9 +147,28 @@ def main(arg):
             cmd = cmd.format('set-sink-volume', sink_name, new_vol)
         if cmdrun(cmd)['retcode'] == 0:
             return True
+    elif arg in ('mic-raise', 'mic-lower', 'mic-toggle'):
+        source_name = _get_def('source')
+        cmd = 'pactl {} {} {}'
+        if arg == 'mic-toggle':
+            if muted('source'):
+                cmd = cmd.format('set-source-mute', source_name, 0)
+            else:
+                cmd = cmd.format('set-source-mute', source_name, 1)
+        elif arg == 'mic-raise':
+            new_vol = inc_vol()
+            cmd = cmd.format('set-source-volume', source_name, new_vol)
+        elif arg == 'mic-lower':
+            new_vol = dec_vol()
+            cmd = cmd.format('set-source-volume', source_name, new_vol)
+        print(cmd)
+        if cmdrun(cmd)['retcode'] == 0:
+            return True
     elif arg == 'volume':
         vol_percent()
         return True
+    elif arg == 'mic-volume':
+        vol_percent("source")
     return False
 
 
