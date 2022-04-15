@@ -1,10 +1,11 @@
 #!/bin/bash
 
+xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 
 xbindkeys
 hsetroot -solid "#000000"
-xcompmgr -c -n -f &>/dev/null &
+xcompmgr -n &>/dev/null &
 wp &
-redshift -l 39.2623:-76.3639 &
+redshift &
 xset s off -dpms
