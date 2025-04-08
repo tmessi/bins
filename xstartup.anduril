@@ -7,5 +7,6 @@ xbindkeys
 hsetroot -solid "#000000"
 xcompmgr -n &>/dev/null &
 wp &
-redshift &
+redshift -l 39.2623:-76.3639 &
+xsettingsd &
 xset s off -dpms

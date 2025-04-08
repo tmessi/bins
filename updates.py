@@ -14,6 +14,7 @@ To run simply::
 # pylint: disable=C0103,E1101
 
 import sys
+import os
 
 try:
     import portage
@@ -21,6 +22,10 @@ except ImportError:
     # If no portage, exit quietly since we probably aren't on Gentoo
     sys.exit(-1)
 
+if os.getenv("DISTRO") == "Gentoo":
+    root = "/"
+else:
+    root = "/home/tim/gentoo/"
 
 def get_world_entries():
     '''
@@ -28,7 +33,7 @@ def get_world_entries():
 
     Return the set of atoms.
     '''
-    f = open("/" + portage.WORLD_FILE, "r")
+    f = open(root + portage.WORLD_FILE, "r")
     atoms = set()
     for line in f.readlines():
         atom = line[:-1]
@@ -47,7 +52,7 @@ def get_installed_versions(atom):
 
     Return the installed version.
     '''
-    return portage.db['/']['vartree'].dbapi.match(atom)
+    return portage.db[root]['vartree'].dbapi.match(atom)
 
 
 def get_best_version(atom):
@@ -59,7 +64,7 @@ def get_best_version(atom):
 
     Return the best availalbe version.
     '''
-    available = portage.db['/']['porttree'].dbapi.match(atom)
+    available = portage.db[root]['porttree'].dbapi.match(atom)
     return portage.best(available)
 
 

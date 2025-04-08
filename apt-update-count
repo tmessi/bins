@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#
+name=${0##*/}
+
+function print_help() {
+    echo "usage: $name [options]
+
+optional args:
+
+    -h|--help     print this help."
+}
+
+pretend=0
+OPTS=$(getopt -o h --long help -n "$name" -- "$@")
+
+if [[ $? != 0 ]]; then echo "option error" >&2; exit 1; fi
+
+eval set -- "$OPTS"
+
+while true; do
+    case "$1" in
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        --)
+            shift; break;;
+        *)
+            echo "Internal error!"; exit 1;;
+    esac
+done
+
+update_cmd="/usr/lib/update-notifier/apt-check"
+update_file="/home/tim/.apt_update_count"
+security_file="/home/tim/.apt_update_security_count"
+
+if [[ ! -x $update_cmd ]]; then
+    exit -1
+fi
+
+out=$($update_cmd 2>&1)
+update_counts=(${out//;/ })
+update_count=${update_counts[0]}
+security_update_count=${update_counts[1]}
+
+if [[ $update_count ]] && [[ $update_count != "0" ]]; then
+    echo "found ${update_count} updates"
+    echo -n $update_count > $update_file
+else
+    [[ -f $update_file ]] && rm $update_file
+    echo "no updates"
+fi
+
+if [[ $security_update_count ]] && [[ $security_update_count != "0" ]]; then
+    echo "found ${security_update_count} security updates"
+    echo -n $security_update_count > $security_file
+else
+    [[ -f $security_file ]] && rm $security_file
+    echo "no security updates"
+fi

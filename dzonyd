@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+args=$@
+
+while true; do
+    dzonky $@
+done
