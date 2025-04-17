@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+case "$(file -Lb "$1")" in
+directory)
+    tree -C "$1" ;;
+*PDF*)
+    pdftotext "$1" - | bat --style=numbers --color=always --line-range :500 ;;
+*HTML*)
+    w3m -dump "$1" ;;
+*text*)
+    bat --style=numbers --color=always --line-range :500 "$1" ;;
+*)
+    bat --style=numbers --color=always --line-range :500 "$1" ;;
+esac
